@@ -1,13 +1,32 @@
-import { Box, MenuButton, Link, Input } from 'theme-ui';
+import { useMemo, useCallback } from 'react';
+import { Box, MenuButton, Link, Input, useColorMode } from 'theme-ui';
 import {
   QuestionMarkCircleIcon,
   UserIcon,
   SunIcon,
+  MoonIcon
 } from '@heroicons/react/24/solid';
 import { useAppContext } from './AppContext';
 
 function Header() {
   const { toggleOpen } = useAppContext();
+  const [colorMode, setColorMode] = useColorMode();
+
+  const themeChanger = useCallback(() => {
+    if (colorMode === 'dark') {
+      return setColorMode('light');
+    }
+    return setColorMode('dark');
+  }, [colorMode, setColorMode]);
+
+  const colorModeNode = useMemo(() => {
+    if (colorMode === 'dark') {
+      return <SunIcon className='icon' onClick={themeChanger} />;
+    }
+
+    return <MoonIcon className='icon' onClick={themeChanger} />;
+  }, [colorMode, themeChanger]);
+
   return (
     <Box
       as='header'
@@ -15,45 +34,53 @@ function Header() {
         display: 'flex',
         zIndex: 1,
         height: '64px',
-        px: 3,
+        pr: 3,
         alignItems: 'center',
         justifyContent: 'space-between',
         position: 'sticky',
         top: 0,
-        bg: 'black',
+        bg: 'header-bg',
       }}
     >
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
+          flex: '0 0 256px',
+          bg: ['transparent', 'background-secondary'],
+          color: 'sidebar-text',
+          height: '64px',
+          borderBottom: (theme) => [
+            'none',
+            `1px solid ${theme.colors?.['border-color']}`,
+          ],
         }}
       >
-        <MenuButton
-          aria-label='Toggle Menu'
+        <Box
+          p={3}
           sx={{
-            display: ['inline-block', 'none'],
-            cursor: 'pointer',
-          }}
-          onClick={toggleOpen}
-        />
-        <Link
-          sx={{
-            display: 'block',
-            p: 2,
-            backgroundColor: 'transparent',
-            transitionProperty: 'background-color',
-            transitionTimingFunction: 'ease-out',
-            transitionDuration: '0.2s',
-            borderRadius: '2px',
-            cursor: 'pointer',
-            '&:hover': {
-              backgroundColor: 'highlight',
-            },
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
-          Svix Dashboard
-        </Link>
+          <MenuButton
+            aria-label='Toggle Menu'
+            sx={{
+              display: ['inline-block', 'none'],
+              cursor: 'pointer',
+            }}
+            onClick={toggleOpen}
+          />
+          <Link
+            sx={{
+              display: 'block',
+              p: 2,
+              cursor: 'pointer',
+            }}
+          >
+            Svix Dashboard
+          </Link>
+        </Box>
       </Box>
       <Box
         sx={{
@@ -70,15 +97,17 @@ function Header() {
             borderRadius: '4px',
             borderColor: 'transparent',
             display: ['none', 'block'],
-            backgroundColor: 'muted',
+            backgroundColor: 'input-bg',
             fontSize: '14px',
-            fontWeight: 700,
             minWidth: '200px',
             p: 2,
+            '&::placeholder': {
+              color: 'input-color',
+            },
             '&:focus': {
-              borderColor: 'primary',
+              borderColor: 'text-muted',
               outline: 'none',
-              boxShadow: (theme) => `0 0 0 1px ${theme.colors?.primary}`,
+              boxShadow: (theme) => `0 0 0 1px ${theme.colors?.['text-muted']}`,
             },
           }}
         />
@@ -90,7 +119,7 @@ function Header() {
             ml: 3,
           }}
         >
-          <SunIcon className='icon' />
+          {colorModeNode}
           <QuestionMarkCircleIcon className='icon' />
           <UserIcon className='icon' />
         </Box>

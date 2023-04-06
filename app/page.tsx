@@ -1,48 +1,16 @@
 'use client';
-import { Box } from 'theme-ui';
 
-import { useAppContext } from '@/components/AppContext';
-import Sidebar, { Overlay } from '@/components/Sidebar';
-import Header from '@/components/Header';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 function Home() {
-  const { openMenu, setOpenMenu } = useAppContext();
+  const router = useRouter();
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-      }}
-    >
-      <Header />
-      {openMenu && <Overlay onClick={() => setOpenMenu(false)} />}
-      <Box
-        sx={{
-          display: ['block', 'flex'],
-          flex: '1 1 auto',
-          alignItems: 'flex-start',
-          height: '100%',
-        }}
-      >
-        <Sidebar />
-        <Box
-          sx={{
-            p: 5,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: 'calc(100vh - 64px)',
-            bg: 'gray',
-            flex: '1 1 auto',
-          }}
-        >
-          <p>Hello world</p>
-        </Box>
-      </Box>
-    </Box>
-  );
+  useEffect(() => {
+    router.replace('/applications')
+  })
+
+  return null
 }
 
 export default Home;
